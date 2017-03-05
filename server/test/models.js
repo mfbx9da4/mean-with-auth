@@ -22,6 +22,22 @@ describe('User Model', () => {
     });
   });
 
+  it('should save user with gravatar', (done) => {
+    const UserMock = sinon.mock(new User({ email: 'test@gmail.com', password: 'root' }));
+    const user = UserMock.object;
+
+    UserMock
+      .expects('save')
+      .yields(null);
+
+    user.save(function (err, result) {
+      UserMock.verify();
+      UserMock.restore();
+      expect(err).to.be.null;
+      done();
+    });
+  });
+
   it('should return error if user is not created', (done) => {
     const UserMock = sinon.mock(new User({ email: 'test@gmail.com', password: 'root' }));
     const user = UserMock.object;

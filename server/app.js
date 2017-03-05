@@ -53,7 +53,7 @@ const app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', views_dir);
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.use(expressStatusMonitor());
 app.use(compression());
 app.use(sass({
@@ -81,7 +81,7 @@ app.use((req, res, next) => {
   if (is_test_env) {
     next();
   } else {
-    lusca.csrf()(req, res, next);
+    lusca.csrf({angular: true})(req, res, next);
   }
 });
 app.use(lusca.xframe('SAMEORIGIN'));
@@ -115,6 +115,9 @@ app.get('/logout', userController.logout);
 app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
 
+app.post('/api/login', userController.api.postLogin);
+app.post('/api/signup', userController.api.postSignup);
+
 /**
  * Error Handler.
  */
@@ -143,7 +146,9 @@ app.init = function init() {
 
     console.log('  Start express server');
     app.server = app.listen(app.get('port'), () => {
-      console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env')); 
+
+      app.set('server_url', 'http://localhost:' + app.get('port'))
+      console.log('%s App is running at %s in %s mode', chalk.green('✓'), app.get('server_url'), app.get('env')); 
       console.log('  Press CTRL-C to stop\n');
       resolve();
     });

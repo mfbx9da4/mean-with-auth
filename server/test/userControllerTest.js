@@ -19,14 +19,11 @@ const userdata = {
   password: formdata.password
 };
 
-const TEST_URL = 'http://localhost:3003'
-const LOGIN_URL = TEST_URL + '/login';
-const HOME_URL = TEST_URL + '/';
-const ACCOUNT_URL = TEST_URL + '/account';
-const UPDATE_ACCOUNT_URL = TEST_URL + '/account/profile';
+let APP_URL;
+let LOGIN_URL;
+let HOME_URL;
 
-
-describe.only('With signed in user', () => {
+describe('With signed in user', () => {
   let app;
   let user1;
   let request;
@@ -45,6 +42,9 @@ describe.only('With signed in user', () => {
     app
       .init()
       .then(() => {
+        APP_URL = app.get('server_url')
+        LOGIN_URL = APP_URL + '/login';
+        HOME_URL = APP_URL + '/';
         request = superagent.agent();
         login(request, done);
       });

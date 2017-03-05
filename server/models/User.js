@@ -45,6 +45,15 @@ userSchema.pre('save', function save(next) {
 });
 
 /**
+ * Generate gravatar
+ */
+userSchema.pre('save', function save(next) {
+    const user = this;
+    user.profile.picture = user.gravatar();
+});
+
+
+/**
  * Helper method for validating user's password.
  */
 userSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
