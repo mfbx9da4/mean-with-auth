@@ -1,13 +1,27 @@
 const mongoose = require('mongoose');
+mongoose.promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
 const {expect} = require('chai');
 const sinon = require('sinon');
 require('sinon-mongoose');
 
 const User = require('../models/User');
 
+
 describe('User Model', () => {
+  const userdata = { email: 'test@gmail.com', password: 'root' };
+
+  after((done) => {
+    // Check we didn't create anyone!
+    User.findOne({email: userdata.email}, (err, res) => {
+      expect(err).to.be.null;
+      expect(res).to.be.null;
+      done();
+    });
+  })
+
   it('should create a new user', (done) => {
-    const UserMock = sinon.mock(new User({ email: 'test@gmail.com', password: 'root' }));
+    const UserMock = sinon.mock(new User(userdata));
     const user = UserMock.object;
 
     UserMock
@@ -23,23 +37,25 @@ describe('User Model', () => {
   });
 
   it('should save user with gravatar', (done) => {
-    const UserMock = sinon.mock(new User({ email: 'test@gmail.com', password: 'root' }));
+    const UserMock = sinon.mock(new User(userdata));
     const user = UserMock.object;
 
-    UserMock
-      .expects('save')
-      .yields(null);
+    expect(user.profile.picture).to.be.undefined;
 
     user.save(function (err, result) {
+      expect(user.profile.picture).to.not.be.undefined;
       UserMock.verify();
       UserMock.restore();
+      console.log(err);
       expect(err).to.be.null;
-      done();
+      user.remove(function (err) {
+        done();
+      });
     });
   });
 
   it('should return error if user is not created', (done) => {
-    const UserMock = sinon.mock(new User({ email: 'test@gmail.com', password: 'root' }));
+    const UserMock = sinon.mock(new User(userdata));
     const user = UserMock.object;
     const expectedError = {
       name: 'ValidationError'
@@ -59,7 +75,7 @@ describe('User Model', () => {
   });
 
   it('should not create a user with the unique email', (done) => {
-    const UserMock = sinon.mock(User({ email: 'test@gmail.com', password: 'root' }));
+    const UserMock = sinon.mock(new User(userdata));
     const user = UserMock.object;
     const expectedError = {
       name: 'MongoError',

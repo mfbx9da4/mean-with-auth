@@ -22,6 +22,19 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
+
+/**
+ * Generate gravatar
+ */
+userSchema.pre('save', function save(next) {
+    const user = this;
+    if (!user.profile.picture) {
+        user.profile.picture = user.gravatar();
+    }
+    next();
+});
+
+
 /**
  * Password hash middleware.
  */
@@ -42,14 +55,6 @@ userSchema.pre('save', function save(next) {
             next();
         });
     });
-});
-
-/**
- * Generate gravatar
- */
-userSchema.pre('save', function save(next) {
-    const user = this;
-    user.profile.picture = user.gravatar();
 });
 
 

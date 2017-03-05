@@ -29,7 +29,7 @@ App.service('AuthService', ['$http', '$q', '$rootScope', function($http, $q, $ro
                 .then(function(res) {
                     if (res.data.success) {
                         Service.user = res.data.data;
-                        console.log(url, 'got data', res.data);
+                        console.log(url, res.data);
                         $rootScope.$broadcast('UserLogIn', Service.user);
                         return resolve(Service.user);
                     }

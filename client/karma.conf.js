@@ -10,10 +10,14 @@ module.exports = function (config) {
 
         frameworks: ['jasmine'],
 
-        reporters: ['progress', 'mocha', 'coverage'],
+        reporters: ['mocha', 'coverage'],
+
+        browserConsoleLogOptions: {
+            level: "log",
+        },
 
         mochaReporter: {
-            output: 'full'
+            output: 'full',
         },
 
         preprocessors: {

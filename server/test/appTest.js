@@ -24,7 +24,9 @@ describe('App Tests', () => {
     it('should return 200 OK', (done) => {
       request(app)
         .get('/login')
-        .expect(200, done);
+        .expect(200, (err, res) => {
+          done();
+        });
     });
   });
 

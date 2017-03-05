@@ -14,8 +14,8 @@ describe('AuthService', function () {
     });
 
     afterEach(function() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
     });
 
     it('should have user undefined on init', function () {
