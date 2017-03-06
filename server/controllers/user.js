@@ -159,10 +159,11 @@ userController.handlePostSignup = (req, res, next) => {
       return reject(errors);
     }
 
-    const user = new User({
+    const user = User.create({
       email: req.body.email,
       password: req.body.password
     });
+
 
     User.findOne({ email: req.body.email }, (err, existingUser) => {
       if (err) { return next(err); }
@@ -180,5 +181,31 @@ userController.handlePostSignup = (req, res, next) => {
   })
 };
 
+
+/**
+ * POST /api/user
+ * Update a user.
+ */
+userController.api.userUpdate = (req, res, next) => {
+  const options = {safe: true, upsert: false, multi: false, runValidators: true};
+  User.update({_id: req.params.id}, req.body, options, (err, user) => {
+    if (err) {
+      return res.json(err);
+    }
+    res.json({success: true, data: user});
+  })
+};
+
+/**
+ * List users
+ */
+userController.api.userList = (req, res, next) => {
+  User.find({}, (err, data) => {
+    if (err) {
+      return res.json(err);
+    }
+    res.json({success: true, data: data});
+  })
+};
 
 module.exports = userController;

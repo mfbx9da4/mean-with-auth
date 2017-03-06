@@ -43,6 +43,11 @@ const userController = require('./controllers/user');
 const passportConfig = require('./config/passport');
 
 /**
+ * Load routeNames
+ */
+const routeNames = require('./config/routeNames');
+
+/**
  * Create Express server.
  */
 const app = express();
@@ -93,8 +98,8 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
-      req.path !== '/login' &&
-      req.path !== '/signup' &&
+      req.path !== routeNames.signup &&
+      req.path !== routeNames.login &&
       !req.path.match(/^\/auth/) &&
       !req.path.match(/\./)) {
     req.session.returnTo = req.path;
@@ -108,15 +113,17 @@ app.use(express.static(public_dir, { maxAge: 31557600000 }));
 /**
  * Primary app routes.
  */
-app.get('/', homeController.index);
-app.get('/login', userController.getLogin);
-app.post('/login', userController.postLogin);
-app.get('/logout', userController.logout);
-app.get('/signup', userController.getSignup);
-app.post('/signup', userController.postSignup);
+app.get(routeNames.home, homeController.index);
+app.get(routeNames.login, userController.getLogin);
+app.post(routeNames.login, userController.postLogin);
+app.get(routeNames.logout, userController.logout);
+app.get(routeNames.signup, userController.getSignup);
+app.post(routeNames.signup, userController.postSignup);
 
-app.post('/api/login', userController.api.postLogin);
-app.post('/api/signup', userController.api.postSignup);
+app.post(routeNames.api.login, userController.api.postLogin);
+app.post(routeNames.api.signup, userController.api.postSignup);
+app.get(routeNames.api.userList, passportConfig.isAuthenticated, userController.api.userList);
+app.post(routeNames.api.userUpdate, passportConfig.isAuthenticated, userController.api.userUpdate);
 
 /**
  * Error Handler.
