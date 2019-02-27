@@ -1,14 +1,14 @@
 MEAN Boilerplate with Email Auth
 ==============================
 
-##Install
+## Install
     
 - Requires node v6. Use [nvm](https://github.com/creationix/nvm) for example, for managing versions.
 - Requires mongodb installed and running (`mongod`).
 
     npm install
 
-##Test and coverage
+## Test and coverage
 
 Test server
 
@@ -18,6 +18,6 @@ Test client
 
     npm run test:client
 
-##Run app
+## Run app
     
     npm run start
